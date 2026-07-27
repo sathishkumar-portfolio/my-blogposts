@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wafer Tracking API Docs</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --bg-panel:#14171d;
+    --bg-code:#1a1e26;
+    --border:#262b34;
+    --text:#e6e9ef;
+    --text-dim:#9aa3b2;
+    --accent:#5b9dff;
+    --accent-soft:rgba(91,157,255,0.12);
+    --get:#3ecf8e;
+    --post:#f2a93c;
+    --get-bg:rgba(62,207,142,0.12);
+    --post-bg:rgba(242,169,60,0.12);
+    --radius:8px;
+    --sidebar-w:270px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+  }
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* Top bar */
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:10px;
+    padding:14px 24px;
+    background:rgba(15,17,21,0.9);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar .logo{
+    width:28px;height:28px;border-radius:6px;
+    background:linear-gradient(135deg,var(--accent),#8f6bff);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;color:#fff;flex:none;
+  }
+  .topbar .title{font-weight:600;font-size:15px;}
+  .topbar .badge{
+    margin-left:auto;
+    font-size:11px;
+    color:var(--text-dim);
+    border:1px solid var(--border);
+    padding:3px 10px;
+    border-radius:999px;
+  }
+
+  /* Layout */
+  .layout{display:flex;max-width:1200px;margin:0 auto;}
+  nav.sidebar{
+    width:var(--sidebar-w);
+    flex:none;
+    padding:28px 18px;
+    position:sticky;
+    top:57px;
+    height:calc(100vh - 57px);
+    overflow-y:auto;
+    border-right:1px solid var(--border);
+  }
+  nav.sidebar h4{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--text-dim);
+    margin:18px 10px 8px;
+  }
+  nav.sidebar h4:first-child{margin-top:0;}
+  nav.sidebar a{
+    display:block;
+    padding:7px 10px;
+    border-radius:6px;
+    color:var(--text-dim);
+    font-size:13.5px;
+  }
+  nav.sidebar a:hover{background:var(--accent-soft);color:var(--text);text-decoration:none;}
+  nav.sidebar a.active{background:var(--accent-soft);color:var(--accent);}
+
+  main{
+    flex:1;
+    min-width:0;
+    padding:40px 48px 100px;
+  }
+
+  .hero{
+    padding-bottom:28px;
+    margin-bottom:36px;
+    border-bottom:1px solid var(--border);
+  }
+  .hero .eyebrow{
+    display:inline-block;
+    font-size:11.5px;
+    color:var(--accent);
+    background:var(--accent-soft);
+    padding:4px 10px;
+    border-radius:999px;
+    margin-bottom:14px;
+    letter-spacing:.03em;
+  }
+  .hero h1{font-size:32px;margin:0 0 12px;}
+  .hero p{color:var(--text-dim);max-width:640px;margin:6px 0;font-size:15px;}
+
+  section{margin-bottom:52px;scroll-margin-top:75px;}
+  section h2{
+    font-size:21px;
+    margin:0 0 14px;
+    padding-top:6px;
+    display:flex;align-items:center;gap:10px;
+  }
+  section h3{font-size:14px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin:22px 0 8px;}
+  section p{color:var(--text-dim);font-size:14.5px;}
+
+  .method-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+  .method{
+    font-size:12px;font-weight:700;
+    padding:3px 9px;border-radius:5px;
+    letter-spacing:.03em;
+  }
+  .method.get{background:var(--get-bg);color:var(--get);}
+  .method.post{background:var(--post-bg);color:var(--post);}
+  .path{font-family:"SFMono-Regular",Consolas,Menlo,monospace;font-size:14px;color:var(--text);}
+
+  pre{
+    background:var(--bg-code);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    overflow-x:auto;
+    font-size:13px;
+    line-height:1.55;
+    margin:0 0 4px;
+  }
+  code{font-family:"SFMono-Regular",Consolas,Menlo,monospace;}
+  .tok-key{color:#7ec4ff;}
+  .tok-str{color:#a6e3a1;}
+  .tok-num{color:#f2a93c;}
+  .tok-punc{color:var(--text-dim);}
+  .tok-comment{color:var(--text-dim);font-style:italic;}
+
+  .card{
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:22px 24px;
+    margin-bottom:14px;
+  }
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px;}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);}
+  th{color:var(--text-dim);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;}
+  td code{background:var(--bg-code);padding:2px 6px;border-radius:4px;font-size:12.5px;}
+  tr:last-child td{border-bottom:none;}
+
+  ul.constraints, ul.practices{padding-left:0;list-style:none;margin:0;}
+  ul.constraints li, ul.practices li{
+    position:relative;padding:8px 0 8px 24px;
+    color:var(--text-dim);font-size:14.5px;
+    border-bottom:1px solid var(--border);
+  }
+  ul.constraints li:last-child, ul.practices li:last-child{border-bottom:none;}
+  ul.constraints li::before{content:"⚠";position:absolute;left:0;color:var(--post);}
+  ul.practices li::before{content:"✓";position:absolute;left:0;color:var(--get);}
+
+  footer{
+    border-top:1px solid var(--border);
+    margin-top:60px;padding-top:24px;
+    color:var(--text-dim);font-size:13px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  }
+
+  @media (max-width:900px){
+    nav.sidebar{display:none;}
+    main{padding:28px 20px 80px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">W</div>
+  <div class="title">WaferTrack API</div>
+  <div class="badge">v1 &nbsp;•&nbsp; REST</div>
+</div>
+
+<div class="layout">
+
+  <nav class="sidebar">
+    <h4>Introduction</h4>
+    <a href="#overview">Overview</a>
+    <a href="#base-url">Base URL</a>
+    <a href="#authentication">Authentication</a>
+
+    <h4>Endpoints</h4>
+    <a href="#wafer-details">Get Wafer Details</a>
+    <a href="#workflow-history">Get Workflow History</a>
+    <a href="#update-status">Update Wafer Status</a>
+    <a href="#active-wafers">Get Active Wafers</a>
+
+    <h4>Reference</h4>
+    <a href="#errors">Error Handling</a>
+    <a href="#constraints">System Constraints</a>
+    <a href="#best-practices">Best Practices</a>
+  </nav>
+
+  <main>
+    <div class="hero" id="overview">
+      <span class="eyebrow">REST API Documentation</span>
+      <h1>Wafer Tracking API</h1>
+      <p>The Wafer Tracking API enables real-time monitoring of wafer movement, process states, and system-level events across semiconductor manufacturing workflows.</p>
+      <p>Designed for integration with MES platforms, equipment monitoring systems, and engineering dashboards.</p>
+    </div>
+
+    <section id="base-url">
+      <h2>Base URL</h2>
+      <pre><code>https://api.wafertrack.com/v1</code></pre>
+    </section>
+
+    <section id="authentication">
+      <h2>Authentication</h2>
+      <p>All requests require an API key, passed as a bearer token in the <code>Authorization</code> header.</p>
+      <pre><code><span class="tok-key">Authorization:</span> <span class="tok-str">Bearer YOUR_API_KEY</span></code></pre>
+
+      <h3>Example Request</h3>
+      <pre><code>curl -X GET <span class="tok-str">"https://api.wafertrack.com/v1/wafers/WF10293"</span> \
+  -H <span class="tok-str">"Authorization: Bearer YOUR_API_KEY"</span></code></pre>
+    </section>
+
+    <section id="wafer-details">
+      <h2>Get Wafer Details</h2>
+      <p>Returns the current status, location, and priority of a single wafer.</p>
+
+      <h3>Endpoint</h3>
+      <div class="method-row"><span class="method get">GET</span><span class="path">/wafers/{id}</span></div>
+
+      <h3>Sample Request</h3>
+      <pre><code>GET /wafers/WF10293</code></pre>
+
+      <h3>Sample Response</h3>
+      <pre><code>{
+  <span class="tok-key">"waferId"</span>: <span class="tok-str">"WF10293"</span>,
+  <span class="tok-key">"status"</span>: <span class="tok-str">"Processing"</span>,
+  <span class="tok-key">"location"</span>: <span class="tok-str">"EUV Station 04"</span>,
+  <span class="tok-key">"priority"</span>: <span class="tok-str">"high"</span>,
+  <span class="tok-key">"updatedAt"</span>: <span class="tok-str">"2026-05-01T11:32:00Z"</span>
+}</code></pre>
+    </section>
+
+    <section id="workflow-history">
+      <h2>Get Workflow History</h2>
+      <p>Returns the ordered sequence of module events for a wafer, useful for audit trails.</p>
+
+      <h3>Endpoint</h3>
+      <div class="method-row"><span class="method get">GET</span><span class="path">/wafers/{id}/history</span></div>
+
+      <h3>Sample Response</h3>
+      <pre><code>[
+  {
+    <span class="tok-key">"module"</span>: <span class="tok-str">"Load Port"</span>,
+    <span class="tok-key">"event"</span>: <span class="tok-str">"entered"</span>,
+    <span class="tok-key">"timestamp"</span>: <span class="tok-str">"2026-05-01T08:00:00Z"</span>
+  },
+  {
+    <span class="tok-key">"module"</span>: <span class="tok-str">"Lithography"</span>,
+    <span class="tok-key">"event"</span>: <span class="tok-str">"processing_started"</span>,
+    <span class="tok-key">"timestamp"</span>: <span class="tok-str">"2026-05-01T09:15:00Z"</span>
+  },
+  {
+    <span class="tok-key">"module"</span>: <span class="tok-str">"Inspection"</span>,
+    <span class="tok-key">"event"</span>: <span class="tok-str">"completed"</span>,
+    <span class="tok-key">"timestamp"</span>: <span class="tok-str">"2026-05-01T10:40:00Z"</span>
+  }
+]</code></pre>
+    </section>
+
+    <section id="update-status">
+      <h2>Update Wafer Status</h2>
+      <p>Updates the current status and module assignment of a wafer.</p>
+
+      <h3>Endpoint</h3>
+      <div class="method-row"><span class="method post">POST</span><span class="path">/wafers/{id}/status</span></div>
+
+      <h3>Request Body</h3>
+      <pre><code>{
+  <span class="tok-key">"status"</span>: <span class="tok-str">"completed"</span>,
+  <span class="tok-key">"module"</span>: <span class="tok-str">"Inspection"</span>,
+  <span class="tok-key">"operatorId"</span>: <span class="tok-str">"OP-204"</span>
+}</code></pre>
+
+      <h3>Response</h3>
+      <pre><code>{
+  <span class="tok-key">"message"</span>: <span class="tok-str">"Status updated successfully"</span>
+}</code></pre>
+    </section>
+
+    <section id="active-wafers">
+      <h2>Get Active Wafers</h2>
+      <p>Returns all wafers currently in a processing state.</p>
+
+      <h3>Endpoint</h3>
+      <div class="method-row"><span class="method get">GET</span><span class="path">/wafers?status=processing</span></div>
+
+      <h3>Sample Response</h3>
+      <pre><code>[
+  {
+    <span class="tok-key">"waferId"</span>: <span class="tok-str">"WF10021"</span>,
+    <span class="tok-key">"module"</span>: <span class="tok-str">"Lithography"</span>
+  },
+  {
+    <span class="tok-key">"waferId"</span>: <span class="tok-str">"WF10044"</span>,
+    <span class="tok-key">"module"</span>: <span class="tok-str">"Inspection"</span>
+  }
+]</code></pre>
+    </section>
+
+    <section id="errors">
+      <h2>Error Handling</h2>
+      <p>All errors follow a standardized structure.</p>
+      <pre><code>{
+  <span class="tok-key">"error"</span>: <span class="tok-str">"Wafer not found"</span>,
+  <span class="tok-key">"code"</span>: <span class="tok-num">404</span>,
+  <span class="tok-key">"requestId"</span>: <span class="tok-str">"req_92KlmX"</span>
+}</code></pre>
+
+      <div class="card">
+        <table>
+          <thead><tr><th>Code</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>200</code></td><td>Successful Request</td></tr>
+            <tr><td><code>400</code></td><td>Invalid Request</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td></tr>
+            <tr><td><code>404</code></td><td>Wafer Not Found</td></tr>
+            <tr><td><code>429</code></td><td>Rate Limit Exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="constraints">
+      <h2>System Constraints</h2>
+      <div class="card">
+        <ul class="constraints">
+          <li>Data synchronization may experience 2–5 second delays</li>
+          <li>Duplicate events may occur during retry operations</li>
+          <li>System uses eventual consistency architecture</li>
+          <li>Event ordering depends on equipment clock synchronization</li>
+          <li>High-frequency polling may trigger request throttling</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="best-practices">
+      <h2>Best Practices</h2>
+      <div class="card">
+        <ul class="practices">
+          <li>Cache frequently requested wafer data</li>
+          <li>Retry failed requests with exponential backoff</li>
+          <li>Validate wafer IDs before sending requests</li>
+          <li>Use workflow history endpoints for audit tracking</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      <span>WaferTrack API Documentation</span>
+      <span>REST API Documentation Project</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const links = document.querySelectorAll('nav.sidebar a');
+  const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href')));
+  function onScroll(){
+    let idx = 0;
+    const y = window.scrollY + 100;
+    sections.forEach((sec, i) => { if(sec && sec.offsetTop <= y) idx = i; });
+    links.forEach(l => l.classList.remove('active'));
+    if(links[idx]) links[idx].classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+
+</body>
+</html>
